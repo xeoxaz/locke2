@@ -9,6 +9,7 @@
 
 // require discord.js
 const { Client, Events, GatewayIntentBits, REST, Routes } = require('discord.js');
+require('dotenv').config({ path: './.env.local' });
 
 // New client with intents
 const client = new Client({
@@ -22,18 +23,14 @@ const client = new Client({
   ]
 });
 
-// local imports
-const { redCake } = require('./utilitys.js');
-var rc = new redCake('🍰');
-
-const { lol } = require('./ai.js');
-
+const { startLoading, stopLoading, log, clear, post } = require('./utilitys.js');
+const { AI } = require('./ai.js');
 const { message } = require('./messages.js'); // handle message incoming
 
 // Events
 client.once(Events.ClientReady, async (readyClient) => {
   var payload = { username: 'Server', message: 'One word. Nothing else.' };
-  var generated = await lol(payload);
+  var generated = await AI(payload);
   client.user.setPresence({
     activities: [{ name: `${generated}` }],
     status: 'dnd'
@@ -45,18 +42,14 @@ client.on('messageCreate', (_message) => {
 });
 
 // Login
-
-tryLogin();
-
-// Get discord token from .env.local
-async function tryLogin() {
-  rc.clear();
-  rc.post();
-  rc.startLoading('Connecting to discord: ');
+(async ()=>{
+  clear();
+  post();
+  startLoading(`A`,'Connecting to discord: ');
   if (process.env.DISCORD_TOKEN) {
     await client.login(process.env.DISCORD_TOKEN);
-    rc.stopLoading('Connected to discord! 🛰️\n');
+    stopLoading(`A`,'Connected to discord! 🛰️\n');
   } else {
-    rc.stopLoading('Discord token: Missing. ☠️');
+    stopLoading(`A`,'Discord token: Missing. ☠️');
   }
-}
+})();

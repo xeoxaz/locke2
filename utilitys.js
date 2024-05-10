@@ -1,67 +1,62 @@
-
-const cliSpinners = require('cli-spinners');
-
-var clc = require("cli-color");
+const clc = require("cli-color");
 const fs = require('fs');
 
-export class redCake {
+let id;
+var moduleName = "📦";
+const tag = `${clc.white("[")}${clc.blue(moduleName)}${clc.white("]")}`;
 
-    constructor(_moduleName) {
-        this.module = _moduleName;
-        this.tag = `${clc.white("[")}${clc.blue(this.module)}${clc.white("]")}`;
+
+const startLoading = (moduleName, data) => {
+
+    if (id) {
+        stopLoading(moduleName, clc.cyanBright(`Override Accepted.`));
     }
-    
-    startLoading(_data){
-        if(this.id){
-            this.stopLoading(clc.cyanBright(`Override Accepted.`));
-        }
-        // https://github.com/sindresorhus/cli-spinners/blob/HEAD/spinners.json
-        // var s = cliSpinners.bouncingBar;
-        
-        var s = cliSpinners.bouncingBall;
 
-        // var s = cliSpinners.line;
-        var i = 0;
-        this.id = setInterval(() => {
-            process.stdout.clearLine(0);
-            process.stdout.cursorTo(0);
-            process.stdout.write(`${this.tag} ${clc.bold(_data)}${clc.redBright(s.frames[i])} `);
-            i++;
-            if(i > s.frames.length - 1){ i = 0 };
-        }, 500);
-    };
-
-    stopLoading(_data){
-        clearInterval(this.id);
-        this.id = null;
+    id = setInterval(() => {
         process.stdout.clearLine(0);
         process.stdout.cursorTo(0);
-        if(_data){
-            process.stdout.write(`${this.tag} ${clc.redBright(_data)}`);
-            // this.log(`${clc.greenBright(_data)}`);
-        }
-    };
+        process.stdout.write(`${tag} ${clc.bold(data)} `);
+    }, 500);
 
-    log(_data){
-        var style = {
-            data : clc.white(_data)
-        }
-        console.log(`${this.tag} ${style.data}`);
-    };
+    return id;
+};
 
-    clear(){
-        process.stdout.write(clc.erase.screen);
-    };
+const stopLoading = (moduleName, data) => {
+  clearInterval(id);
+  id = null;
+  process.stdout.clearLine(0);
+  process.stdout.cursorTo(0);
+  if (data) {
+    process.stdout.write(`${tag} ${clc.redBright(data)}`);
+  }
+};
 
-    post(){
-        try {
-            const data = fs.readFileSync('./ascii.txt', 'utf-8');
-            const lines = data.split(/\r?\n/); // Split by newline characters
-            lines.forEach((line) => {
-                console.log(line); // Process each line here
-            });
-        } catch (error) {
-            console.error('Error reading the file:', error.message);
-        }
+const log = (moduleName, data) => {
+  const tag = `${clc.white("[")}${clc.blue(moduleName)}${clc.white("]")}`;
+  console.log(`${tag} ${clc.white(data)}`);
+};
+
+const clear = () => {
+  process.stdout.write(clc.erase.screen);
+};
+
+const post = () => {
+  fs.readFile('./ascii.txt', 'utf-8', (error, data) => {
+    if (error) {
+      console.error('Error reading the file:', error.message);
+      return;
     }
-}
+    const lines = data.split(/\r?\n/); // Split by newline characters
+    lines.forEach((line) => {
+      console.log(line); // Process each line here
+    });
+  });
+};
+
+module.exports = {
+  startLoading,
+  stopLoading,
+  log,
+  clear,
+  post
+};

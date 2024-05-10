@@ -1,0 +1,29 @@
+{
+  "name": "locke2",
+  "version": "0.0.1",
+  "description": "Locke 2",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xeoxaz/locke2.git"
+  },
+  "keywords": [
+    "locke",
+    "xeoxaz",
+    "ai",
+    "ollama",
+    "llama"
+  ],
+  "author": "Xeoxaz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/xeoxaz/locke2/issues"
+  },
+  "homepage": "https://github.com/xeoxaz/locke2#readme",
+  "dependencies": {
+    "discord.js": "^14.15.2"
+  }
+}
